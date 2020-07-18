@@ -1,0 +1,50 @@
+:root {
+  --accent-default: #a7414a;
+  --accent-dark: #742d33;
+  --accent-light: #c17a80;
+  --gray-lightest: #f4f5f4;
+}
+
+.logo-color {
+  color: var(--accent-default);
+  text-decoration: none;
+}
+
+.circle-bg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--gray-lightest);
+  text-align: center;
+}
+
+.navbar-container {
+  padding: 0 120px;
+  border: 1px solid #e2e5e6;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-family: Lato;
+  font-weight: bold;
+  color: var(--accent-default);
+}
+
+.search-bar {
+  background-color: var(--gray-lightest);
+  padding: 11px 16px;
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  border-bottom: 1px solid white;
+  transition: all ease 150ms;
+}
+
+.search-bar.active {
+  border-bottom: 1px solid var(--accent-default);
+}
+
+.iconColor {
+  color: var(--accent-default);
+}
