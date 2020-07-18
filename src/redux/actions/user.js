@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { API_URL } from "../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../constants/API";
 import Cookie from "universal-cookie";
 import userTypes from "../types/user";
 import passwordHash from "password-hash";
@@ -23,36 +23,34 @@ export const userInputHandler = (text) => {
 
 export const loginHandler = (userData) => {
   return (dispatch) => {
-    const { username, password, lastLogin } = userData;
+    const { username, password, lastlogin } = userData;
 
-    Axios.get(`${API_URL}/users`, {
-      params: {
-        username,
-      },
-    }).then((res) => {
-      if (res.data.length > 0) {
-        if (passwordHash.verify(password, res.data[0].password)) {
-          swal("Yeay!", "Login berhasil", "success");
-          dispatch({
-            type: ON_LOGIN_SUCCESS,
-            payload: res.data[0],
-          });
-          Axios.patch(`${API_URL}/users/${res.data[0].id}`, {
-            lastLogin,
-          });
+    Axios.get(`${API_URL_JAVA}/users/username/${username}`)
+      .then((res) => {
+        if (res.data) {
+          if (passwordHash.verify(password, res.data.password)) {
+            swal("Yeay!", "Login berhasil", "success");
+            dispatch({
+              type: ON_LOGIN_SUCCESS,
+              payload: res.data,
+            });
+            Axios.patch(`${API_URL_JAVA}/users/${res.data.id}`, {
+              lastlogin,
+            })
+              .then((res) => {
+                swal("Yeay!", "Login berhasil", "success");
+              })
+              .catch((err) => {
+                swal("fail");
+              });
+          } else {
+            swal("cc");
+          }
         } else {
-          dispatch({
-            type: ON_LOGIN_FAIL,
-            payload: "Passweord salah",
-          });
+          swal("bb");
         }
-      } else {
-        dispatch({
-          type: ON_LOGIN_FAIL,
-          payload: "Username salah",
-        });
-      }
-    });
+      })
+      .catch((err) => {});
   };
 };
 
@@ -90,34 +88,26 @@ export const logoutHandler = () => {
 };
 
 export const registerHandler = (userData) => {
+  const { username, email } = userData;
   return (dispatch) => {
-    Axios.get(`${API_URL}/users`, {
-      params: {
-        username: userData.username,
-      },
-    })
+    Axios.get(`${API_URL_JAVA}/users/username/${username}`)
       .then((res) => {
-        if (res.data.length > 0) {
+        if (res.data) {
           dispatch({
             type: "ON_REGISTER_FAIL",
-            payload: "Username sudah digunakan",
+            payload: `Username ${username} sudah digunakan`,
           });
         } else {
-          Axios.get(`${API_URL}/users`, {
-            params: {
-              email: userData.email,
-            },
-          })
+          Axios.get(`${API_URL_JAVA}/users/email/${email}`)
             .then((res) => {
-              if (res.data.length > 0) {
+              if (res.data) {
                 dispatch({
                   type: "ON_REGISTER_FAIL",
-                  payload: "Email sudah digunakan",
+                  payload: `Email ${email} sudah digunakan`,
                 });
               } else {
-                Axios.post(`${API_URL}/users`, userData)
+                Axios.post(`${API_URL_JAVA}/users`, userData)
                   .then((res) => {
-                    console.log(res.data);
                     dispatch({
                       type: ON_LOGIN_SUCCESS,
                       payload: res.data,
@@ -128,14 +118,10 @@ export const registerHandler = (userData) => {
                   });
               }
             })
-            .catch((err) => {
-              console.log(err);
-            });
+            .catch((err) => {});
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 };
 

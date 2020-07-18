@@ -1,5 +1,5 @@
 PROJECT TUGAS AKHIR
-Membuat Situs E-Commerce Jual Beli Spare Part Kendaraan Bermotor
+Membuat Situs E-Commerce Sepeda
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -1,6 +1,6 @@
 import React from "react";
 import Axios from "axios";
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import "./Member.css";
 import ButtonUI from "../../components/Button/Button";
 import swal from "sweetalert";
@@ -11,7 +11,7 @@ class Member extends React.Component {
   };
 
   componentDidMount = () => {
-    Axios.get(`${API_URL}/users/`)
+    Axios.get(`${API_URL_JAVA}/users`)
       .then((res) => {
         this.setState({
           userList: res.data,
@@ -30,12 +30,12 @@ class Member extends React.Component {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        Axios.delete(`${API_URL}/users/${idx}`)
+        Axios.delete(`${API_URL_JAVA}/users/${idx}`)
           .then((res) => {
             swal("Poof! User berhasil dihapus!", {
               icon: "success",
             });
-            Axios.get(`${API_URL}/users/`)
+            Axios.get(`${API_URL_JAVA}/users/`)
               .then((res) => {
                 this.setState({
                   userList: res.data,
@@ -65,7 +65,7 @@ class Member extends React.Component {
         address,
         phone,
         role,
-        lastLogin,
+        lastlogin,
         verified,
       } = val;
       return (
@@ -76,7 +76,6 @@ class Member extends React.Component {
           <td>{address}</td>
           <td>{phone}</td>
           <td>{role}</td>
-          <td>{lastLogin}</td>
           <td>{verified ? <>verified</> : <>-</>}</td>
           <td>
             {role !== "admin" ? (
@@ -110,7 +109,6 @@ class Member extends React.Component {
               <th>Address</th>
               <th>Phone</th>
               <th>Role</th>
-              <th>Last Login</th>
               <th>Status</th>
               <th>Action</th>
             </thead>

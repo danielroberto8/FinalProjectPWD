@@ -9,7 +9,7 @@ import Cookie from "universal-cookie";
 import passwordHash from "password-hash";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import Axios from "axios";
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 
 const cookieObject = new Cookie();
 
@@ -77,7 +77,7 @@ class AuthScreen extends React.Component {
     const userData = {
       username: usernameLogin,
       password: passwordLogin,
-      lastLogin: this.getDate(),
+      lastlogin: this.getDate(),
     };
 
     this.clearState();
@@ -124,7 +124,7 @@ class AuthScreen extends React.Component {
       email: emailRegis,
       address: addressRegis,
       phone: phoneRegis,
-      lastLogin: this.getDate(),
+      lastlogin: this.getDate(),
       verified: false,
       role: "user",
     };
@@ -132,6 +132,17 @@ class AuthScreen extends React.Component {
     console.log(userData.password);
     this.clearState();
     this.props.registerHandler(userData);
+    Axios.post(`${API_URL_JAVA}/users/sendverifemail/${emailRegis}`)
+      .then((res) => {
+        swal(
+          "Yeay!",
+          `Email verifikasi sudah dikirim ke ${emailRegis}`,
+          "success"
+        );
+      })
+      .catch((err) => {
+        swal("gagal bro");
+      });
   };
 
   toggleShow = (field) => {
@@ -146,18 +157,22 @@ class AuthScreen extends React.Component {
 
   submitEmailForget = () => {
     if (this.state.emailForget && this.state.emailForget.indexOf("@") > 0) {
-      Axios.get(`${API_URL}/users`, {
-        params: {
-          email: this.state.emailForget,
-        },
-      })
+      Axios.get(`${API_URL_JAVA}/users/email/${this.state.emailForget}`)
         .then((res) => {
-          if (res.data[0]) {
-            swal(
-              "Sip!",
-              `Email verifikasi sudah dikirim ke ${this.state.emailForget}`,
-              "success"
-            );
+          if (res.data) {
+            Axios.post(
+              `${API_URL_JAVA}/users/sendemailreset/${this.state.emailForget}`
+            )
+              .then((res) => {
+                swal(
+                  "Yeay!",
+                  `Email verifikasi sudah dikirim ke ${this.state.emailForget}`,
+                  "success"
+                );
+              })
+              .catch((err) => {
+                swal("gagal bro");
+              });
           } else {
             swal(
               "Oops...",
@@ -167,7 +182,7 @@ class AuthScreen extends React.Component {
           }
         })
         .catch((err) => {
-          console.log(err);
+          swal("gagal broww");
         });
       this.toggleModal();
     } else {
@@ -295,7 +310,7 @@ class AuthScreen extends React.Component {
                       this.inputHandler(e, "passwordRegis");
                     }}
                   />
-                  <span className="input-group-btn">
+                  {/* <span className="input-group-btn">
                     <button
                       className="btn btn-default reveal"
                       type="button"
@@ -303,7 +318,7 @@ class AuthScreen extends React.Component {
                     >
                       <i class="glyphicon glyphicon-eye-open"></i>
                     </button>
-                  </span>
+                  </span> */}
                 </div>
                 <TextField
                   placeholder="Address"
