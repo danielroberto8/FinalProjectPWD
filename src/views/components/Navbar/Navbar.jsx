@@ -2,13 +2,19 @@ import React from "react";
 import { connect } from "react-redux";
 import { logoutHandler, searchHandler } from "../../../redux/actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons/";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
+import {
+  faShoppingCart,
+  faUserAstronaut,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons/";
 import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
+  Modal,
+  ModalHeader,
+  ModalBody,
 } from "reactstrap";
 import Logo from "../../../assets/images/Logo.png";
 import "./Navbar.css";
@@ -25,6 +31,7 @@ class Navbar extends React.Component {
     searchBarIsFocused: false,
     searchBarInput: "",
     dropdownOpen: false,
+    modalOpen: false,
   };
 
   searchBarInputHandler = (e) => {
@@ -64,6 +71,12 @@ class Navbar extends React.Component {
       });
   };
 
+  toggleModal = () => {
+    this.setState({
+      modalOpen: !this.state.modalOpen,
+    });
+  };
+
   render() {
     return (
       <div className="d-flex flex-row justify-content-between align-items-center py-4 navbar-container">
@@ -78,25 +91,15 @@ class Navbar extends React.Component {
           </Link>
         </div>
         <div
-          style={{ flex: 1 }}
-          className="px-5 d-flex flex-row justify-content-start"
-        >
-          <input
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            className={`search-bar ${
-              this.state.searchBarIsFocused ? "active" : null
-            }`}
-            type="text"
-            onChange={(e) => {
-              this.searchBarInputHandler(e);
-            }}
-          />
-        </div>
-        <div
           className="d-flex flex-row align-items-center"
           style={{ cursor: "pointer" }}
         >
+          <FontAwesomeIcon
+            className="mr-4 iconColor"
+            icon={faSearch}
+            style={{ fontSize: 24 }}
+            onClick={this.toggleModal}
+          />
           {this.props.user.id ? (
             <>
               <Link to="/cart">
@@ -115,9 +118,9 @@ class Navbar extends React.Component {
                 toggle={this.toggleDropdown}
                 isOpen={this.state.dropdownOpen}
               >
-                <DropdownToggle tag="div" className="d-flex ml-5">
+                <DropdownToggle tag="div" className="d-flex ml-3">
                   <FontAwesomeIcon
-                    icon={faUser}
+                    icon={faUserAstronaut}
                     style={{ fontSize: 24 }}
                     className="iconColor"
                   />
@@ -139,14 +142,6 @@ class Navbar extends React.Component {
                           to="/dashboard"
                         >
                           Dashboard
-                        </Link>
-                      </DropdownItem>
-                      <DropdownItem>
-                        <Link
-                          style={{ color: "inherit", textDecoration: "none" }}
-                          to="/category"
-                        >
-                          Category
                         </Link>
                       </DropdownItem>
                       <DropdownItem>
@@ -220,6 +215,30 @@ class Navbar extends React.Component {
             </>
           )}
         </div>
+        <Modal toggle={this.toggleModal} isOpen={this.state.modalOpen}>
+          <ModalHeader>
+            <h3 className="text-secondary">Cari sepeda impianmu</h3>
+          </ModalHeader>
+          <ModalBody>
+            <div
+              style={{ flex: 1 }}
+              className="px-5 d-flex flex-row justify-content-start"
+            >
+              <input
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
+                value={this.props.search.searchTerm}
+                className={`search-bar ${
+                  this.state.searchBarIsFocused ? "active" : null
+                }`}
+                type="text"
+                onChange={(e) => {
+                  this.searchBarInputHandler(e);
+                }}
+              />
+            </div>
+          </ModalBody>
+        </Modal>
       </div>
     );
   }

@@ -122,33 +122,42 @@ export const registerHandler = (userData) => {
   };
 };
 
-export const editUserHandler = (id, curentuser, userData) => {
+export const editUserHandler = (id, curentuser, curentemail, userData) => {
   return (dispatch) => {
-    const { username, address, phone } = userData;
+    const { fullname, username, email, address, phone, verified } = userData;
     Axios.get(`${API_URL_JAVA}/users/username/${username}`)
       .then((res) => {
         if (!res.data || username === curentuser) {
-          Axios.patch(`${API_URL_JAVA}/users/${id}`, {
-            username,
-            address,
-            phone,
-          })
-            .then((res) => {
-              swal("Yeay!", "Update data berhasil", "success");
-              Axios.get(`${API_URL_JAVA}/users/username/${username}`)
+          Axios.get(`${API_URL_JAVA}/users/email/${email}`).then((res) => {
+            if (!res.data || email === curentemail) {
+              Axios.patch(`${API_URL_JAVA}/users/${id}`, {
+                fullname,
+                username,
+                email,
+                address,
+                phone,
+                verified,
+              })
                 .then((res) => {
-                  dispatch({
-                    type: ON_LOGIN_SUCCESS,
-                    payload: res.data,
-                  });
+                  swal("Yeay!", "Update data berhasil", "success");
+                  Axios.get(`${API_URL_JAVA}/users/username/${username}`)
+                    .then((res) => {
+                      dispatch({
+                        type: ON_LOGIN_SUCCESS,
+                        payload: res.data,
+                      });
+                    })
+                    .catch((err) => {
+                      swal("addafafafba");
+                    });
                 })
                 .catch((err) => {
-                  swal("addafafafba");
+                  console.log(err);
                 });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+            } else {
+              swal("Oops...", `Email ${email} sudah ada yang pakai`, "error");
+            }
+          });
         } else {
           swal("Oops...", `Username ${username} sudah dipakai`, "error");
         }
@@ -162,12 +171,9 @@ export const editUserHandler = (id, curentuser, userData) => {
 
 export const editPasswordHandler = (id, username, passwordOld, passwordNew) => {
   return (dispatch) => {
-    alert(`${API_URL_JAVA}/users/username/${username}`);
     Axios.get(`${API_URL_JAVA}/users/username/${username}`)
       .then((res) => {
-        alert(passwordHash.verify(passwordOld, res.data.password));
         if (passwordHash.verify(passwordOld, res.data.password)) {
-          alert(passwordHash.generate(passwordNew));
           Axios.patch(`${API_URL_JAVA}/users/${id}`, {
             password: passwordHash.generate(passwordNew),
           }).then((res) => {

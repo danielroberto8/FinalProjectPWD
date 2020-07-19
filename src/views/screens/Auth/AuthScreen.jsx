@@ -140,9 +140,7 @@ class AuthScreen extends React.Component {
           "success"
         );
       })
-      .catch((err) => {
-        swal("gagal bro");
-      });
+      .catch((err) => {});
   };
 
   toggleShow = (field) => {

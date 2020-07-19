@@ -13,8 +13,11 @@ class Profile extends React.Component {
     editInfo: {
       id: 0,
       username: "",
+      fullname: "",
+      email: "",
       address: "",
       phone: "",
+      verified: false,
     },
     editPassword: {
       passwordOld: "",
@@ -47,35 +50,39 @@ class Profile extends React.Component {
         modalOpen: !this.state.modalOpen,
         modalType: type,
         editInfo: {
+          fullname: this.props.user.fullname,
           username: this.props.user.username,
+          email: this.props.user.email,
           address: this.props.user.address,
           phone: this.props.user.phone,
+          verified: this.props.user.verified,
         },
       });
     }
   };
 
   saveBtnHandler = () => {
-    const { username, address, phone } = this.state.editInfo;
+    const { username, email, address, phone } = this.state.editInfo;
     if (username !== "" && address !== "" && phone !== "") {
-      alert(this.props.user.username === username);
-      if (this.props.user.username === username) {
+      var smallUsername = username.toLowerCase();
+      this.setState({
+        editInfo: {
+          ...this.state.editInfo,
+          username: smallUsername,
+        },
+      });
+      if (email !== this.props.user.email) {
         this.setState({
           editInfo: {
-            username: null,
-          },
-        });
-      } else {
-        var smallUsername = username.toLowerCase();
-        this.setState({
-          editInfo: {
-            username: smallUsername,
+            ...this.state.editInfo,
+            verified: false,
           },
         });
       }
       this.props.editUserHandler(
         this.props.user.id,
         this.props.user.username,
+        this.props.user.email,
         this.state.editInfo
       );
       this.toggleModal();
@@ -112,12 +119,12 @@ class Profile extends React.Component {
       this.props.user.username === ""
     ) {
       return (
-        <div className="container text-center pt-4">
+        <div className="container text-center pt-4 pb-4">
           <div className="profile p-3">
             <caption className="p-3 text-center">
               <h2 className>Profile</h2>
             </caption>
-            <div className="row">
+            <div className="row pl-3">
               <div className="col-8 text-left">
                 <h4 className="text-left">Personal Infromation</h4>
                 <div classname="font-weight-light ">
@@ -197,11 +204,25 @@ class Profile extends React.Component {
                 <div className="row">
                   {this.state.modalType === "info" ? (
                     <div className="col-12">
+                      <caption>Fullname</caption>
+                      <TextField
+                        value={this.state.editInfo.fullname}
+                        onChange={(e) =>
+                          this.inputHandler(e, "fullname", "editInfo")
+                        }
+                      />
                       <caption>Username</caption>
                       <TextField
                         value={this.state.editInfo.username}
                         onChange={(e) =>
                           this.inputHandler(e, "username", "editInfo")
+                        }
+                      />
+                      <caption>Email</caption>
+                      <TextField
+                        value={this.state.editInfo.email}
+                        onChange={(e) =>
+                          this.inputHandler(e, "email", "editInfo")
                         }
                       />
                       <caption>Phone</caption>
