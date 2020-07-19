@@ -58,13 +58,26 @@ class Profile extends React.Component {
   saveBtnHandler = () => {
     const { username, address, phone } = this.state.editInfo;
     if (username !== "" && address !== "" && phone !== "") {
-      var smallUsername = username.toLowerCase();
-      this.setState({
-        editInfo: {
-          username: smallUsername,
-        },
-      });
-      this.props.editUserHandler(this.props.user.id, this.state.editInfo);
+      alert(this.props.user.username === username);
+      if (this.props.user.username === username) {
+        this.setState({
+          editInfo: {
+            username: null,
+          },
+        });
+      } else {
+        var smallUsername = username.toLowerCase();
+        this.setState({
+          editInfo: {
+            username: smallUsername,
+          },
+        });
+      }
+      this.props.editUserHandler(
+        this.props.user.id,
+        this.props.user.username,
+        this.state.editInfo
+      );
       this.toggleModal();
     } else {
       swal("Oops...", "Ada field yang kosong slur", "error");

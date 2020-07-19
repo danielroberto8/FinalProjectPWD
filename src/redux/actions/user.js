@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { API_URL, API_URL_JAVA } from "../../constants/API";
+import { API_URL_JAVA } from "../../constants/API";
 import Cookie from "universal-cookie";
 import userTypes from "../types/user";
 import passwordHash from "password-hash";
@@ -34,6 +34,7 @@ export const loginHandler = (userData) => {
               type: ON_LOGIN_SUCCESS,
               payload: res.data,
             });
+            console.log(res.data);
             Axios.patch(`${API_URL_JAVA}/users/${res.data.id}`, {
               lastlogin,
             })
@@ -44,10 +45,10 @@ export const loginHandler = (userData) => {
                 swal("fail");
               });
           } else {
-            swal("cc");
+            swal("Oops...", "Password yang kamu masukkan salah", "error");
           }
         } else {
-          swal("bb");
+          swal("Oops...", "Username yang kamu masukkan salah", "error");
         }
       })
       .catch((err) => {});
@@ -56,16 +57,12 @@ export const loginHandler = (userData) => {
 
 export const userKeepLogin = (userData) => {
   return (dispatch) => {
-    Axios.get(`${API_URL}/users`, {
-      params: {
-        id: userData.id,
-      },
-    })
+    Axios.get(`${API_URL_JAVA}/users/username/${userData.username}`)
       .then((res) => {
-        if (res.data.length > 0) {
+        if (res.data) {
           dispatch({
             type: ON_LOGIN_SUCCESS,
-            payload: res.data[0],
+            payload: res.data,
           });
         } else {
           dispatch({
@@ -125,27 +122,29 @@ export const registerHandler = (userData) => {
   };
 };
 
-export const editUserHandler = (id, userData) => {
+export const editUserHandler = (id, curentuser, userData) => {
   return (dispatch) => {
     const { username, address, phone } = userData;
-    Axios.get(`${API_URL}/users/`, {
-      params: {
-        username,
-      },
-    })
+    Axios.get(`${API_URL_JAVA}/users/username/${username}`)
       .then((res) => {
-        if (!res.data[0]) {
-          Axios.patch(`${API_URL}/users/${id}`, {
+        if (!res.data || username === curentuser) {
+          Axios.patch(`${API_URL_JAVA}/users/${id}`, {
             username,
             address,
             phone,
           })
             .then((res) => {
               swal("Yeay!", "Update data berhasil", "success");
-              dispatch({
-                type: ON_LOGIN_SUCCESS,
-                payload: res.data,
-              });
+              Axios.get(`${API_URL_JAVA}/users/username/${username}`)
+                .then((res) => {
+                  dispatch({
+                    type: ON_LOGIN_SUCCESS,
+                    payload: res.data,
+                  });
+                })
+                .catch((err) => {
+                  swal("addafafafba");
+                });
             })
             .catch((err) => {
               console.log(err);
@@ -155,6 +154,7 @@ export const editUserHandler = (id, userData) => {
         }
       })
       .catch((err) => {
+        swal("eror lagi bro");
         console.log(err);
       });
   };
@@ -162,15 +162,13 @@ export const editUserHandler = (id, userData) => {
 
 export const editPasswordHandler = (id, username, passwordOld, passwordNew) => {
   return (dispatch) => {
-    Axios.get(`${API_URL}/users/`, {
-      params: {
-        username,
-      },
-    })
+    alert(`${API_URL_JAVA}/users/username/${username}`);
+    Axios.get(`${API_URL_JAVA}/users/username/${username}`)
       .then((res) => {
-        alert("Masuk sini bang");
-        if (passwordHash.verify(passwordOld, res.data[0].password)) {
-          Axios.patch(`${API_URL}/users/${id}`, {
+        alert(passwordHash.verify(passwordOld, res.data.password));
+        if (passwordHash.verify(passwordOld, res.data.password)) {
+          alert(passwordHash.generate(passwordNew));
+          Axios.patch(`${API_URL_JAVA}/users/${id}`, {
             password: passwordHash.generate(passwordNew),
           }).then((res) => {
             swal("Yeay!", "password berhasil diganti", "success");

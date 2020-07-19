@@ -2,12 +2,6 @@ import React from "react";
 import Axios from "axios";
 import { onCartChange } from "../../../redux/actions";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShippingFast,
-  faMoneyBillWave,
-  faHeadset,
-} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 
 import ProductCard from "../../components/Cards/ProductCard";
@@ -32,6 +26,7 @@ class Home extends React.Component {
     })
       .then((res) => {
         this.props.onCartChange(res.data.length);
+        console.log(this.props.user);
       })
       .catch((err) => {
         console.log(err);

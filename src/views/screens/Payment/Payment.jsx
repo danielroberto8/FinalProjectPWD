@@ -4,27 +4,41 @@ import "./Payment.css";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import ButtonUI from "../../components/Button/Button";
 
 class Payment extends React.Component {
   state = {
+    userList: [],
     paymentList: [],
     category: "",
   };
 
   componentDidMount = () => {
     this.loadPaymentList();
+    this.loadUserList();
   };
 
   loadPaymentList = () => {
-    Axios.get(`${API_URL}/transaction?_expand=user`)
+    Axios.get(`${API_URL}/transaction`)
       .then((res) => {
         this.setState({
           paymentList: res.data,
         });
       })
       .catch((err) => console.log(err));
+  };
+
+  loadUserList = () => {
+    Axios.get(`${API_URL_JAVA}/users`)
+      .then((res) => {
+        this.setState({
+          userList: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   setCategory = (key) => {
@@ -42,7 +56,13 @@ class Payment extends React.Component {
           return (
             <tr>
               <td>{id}</td>
-              <td>{user.username}</td>
+              <td>
+                {this.state.userList.map((val) => {
+                  if (val.id === user) {
+                    return val.username;
+                  }
+                })}
+              </td>
               <td>{purchaseDate}</td>
               {totalPayment ? (
                 <td>
@@ -67,7 +87,13 @@ class Payment extends React.Component {
         return (
           <tr>
             <td>{id}</td>
-            <td>{user.username}</td>
+            <td>
+              {this.state.userList.map((val) => {
+                if (val.id === user) {
+                  return val.username;
+                }
+              })}
+            </td>
             <td>{purchaseDate}</td>
             {totalPayment ? (
               <td>

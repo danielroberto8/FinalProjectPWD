@@ -184,8 +184,9 @@ class Cart extends React.Component {
         };
       });
       if (willCheckOut) {
+        alert(`${API_URL}/transaction`);
         Axios.post(`${API_URL}/transaction`, {
-          userId: this.props.user.id,
+          user: this.props.user.id,
           status: "unpaid",
           purchaseDate: this.getDate(),
           confirmationDate: "",

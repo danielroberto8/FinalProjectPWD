@@ -9,7 +9,7 @@ import Cookie from "universal-cookie";
 import passwordHash from "password-hash";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import Axios from "axios";
-import { API_URL, API_URL_JAVA } from "../../../constants/API";
+import { API_URL_JAVA } from "../../../constants/API";
 
 const cookieObject = new Cookie();
 
@@ -31,7 +31,7 @@ class AuthScreen extends React.Component {
   };
 
   componentDidUpdate() {
-    if (this.props.user.username !== "") {
+    if (this.props.user.isLogged) {
       cookieObject.set("authData", JSON.stringify(this.props.user));
     }
   }
@@ -87,7 +87,7 @@ class AuthScreen extends React.Component {
   getDate = () => {
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, "0");
-    let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    let mm = String(today.getMonth() + 1).padStart(2, "0");
     let yyyy = today.getFullYear();
 
     return (today = dd + "/" + mm + "/" + yyyy);

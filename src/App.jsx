@@ -23,6 +23,7 @@ import PathNotFound from "./views/screens/NotFound/PathNotFound";
 import Report from "./views/screens/Report/Report";
 import Profile from "./views/screens/Profile/Profile";
 import Category from "./views/screens/Category/Category";
+import PasswordForget from "./views/screens/PasswordForget/PasswordForget";
 
 const cookieObj = new Cookie();
 
@@ -79,6 +80,11 @@ class App extends React.Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/auth/:type" component={AuthScreen} />
             <Route exact path="/profile/:username" component={Profile} />
+            <Route
+              exact
+              path="/resetpassword/:key1/:key2"
+              component={PasswordForget}
+            />
             <Route
               exact
               path="/product/:productId"

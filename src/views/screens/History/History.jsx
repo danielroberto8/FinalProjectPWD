@@ -17,7 +17,7 @@ class History extends React.Component {
   componentDidMount() {
     Axios.get(`${API_URL}/transaction`, {
       params: {
-        userId: this.props.user.id,
+        user: this.props.user.id,
       },
     })
       .then((res) => {

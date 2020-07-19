@@ -1,18 +1,19 @@
 import React from "react";
 import Axios from "axios";
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import "./Report.css";
 import swal from "sweetalert";
 
 class Report extends React.Component {
   state = {
+    userList: [],
     transactionList: [],
     productSold: [],
     switch: true,
   };
 
   componentDidMount = () => {
-    Axios.get(`${API_URL}/transaction?_expand=user`, {
+    Axios.get(`${API_URL}/transaction`, {
       params: {
         status: "Confirmed",
       },
@@ -35,12 +36,26 @@ class Report extends React.Component {
       .catch((err) => {
         console.log(err);
       });
+
+    this.loadUserList();
+  };
+
+  loadUserList = () => {
+    Axios.get(`${API_URL_JAVA}/users`)
+      .then((res) => {
+        this.setState({
+          userList: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   getTotalSpent = (userId) => {
     let total = 0;
     this.state.transactionList.map((val) => {
-      if (val.userId === userId) {
+      if (val.user === userId) {
         total += val.totalPayment;
       }
     });
@@ -50,7 +65,7 @@ class Report extends React.Component {
   getQuantity = (userId) => {
     let quantity = 0;
     this.state.transactionList.map((val) => {
-      if (val.userId === userId) {
+      if (val.user === userId) {
         val.itemList.map((val) => {
           quantity += val.quantity;
         });
@@ -62,7 +77,7 @@ class Report extends React.Component {
   countTrans = (userId) => {
     let count = 0;
     this.state.transactionList.map((val) => {
-      if (val.userId === userId) {
+      if (val.user === userId) {
         count++;
       }
     });
@@ -81,21 +96,27 @@ class Report extends React.Component {
   renderUserList = () => {
     let arrList = [];
     return this.state.transactionList.map((val) => {
-      const { userId, user } = val;
-      if (!this.checkUserExist(arrList, userId)) {
-        arrList.push(userId);
+      const { user } = val;
+      if (!this.checkUserExist(arrList, user)) {
+        arrList.push(user);
         return (
           <tr>
-            <td>{userId}</td>
-            <td>{user.username}</td>
-            <td>{this.countTrans(userId)}</td>
-            <td>{this.getQuantity(userId)}</td>
+            <td>{user}</td>
+            <td>
+              {this.state.userList.map((val) => {
+                if (val.id === user) {
+                  return val.username;
+                }
+              })}
+            </td>
+            <td>{this.countTrans(user)}</td>
+            <td>{this.getQuantity(user)}</td>
             <td>
               {" "}
               {new Intl.NumberFormat("id-ID", {
                 style: "currency",
                 currency: "IDR",
-              }).format(this.getTotalSpent(userId))}
+              }).format(this.getTotalSpent(user))}
             </td>
           </tr>
         );
