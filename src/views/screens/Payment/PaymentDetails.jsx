@@ -1,7 +1,7 @@
 import React from "react";
 import Axios from "axios";
 import { Redirect } from "react-router-dom";
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import ButtonUI from "../../components/Button/Button";
 import swal from "sweetalert";
 import { connect } from "react-redux";
@@ -63,6 +63,7 @@ class PaymentDetails extends React.Component {
             .then(() => {
               this.state.itemList.map((val) => {
                 let prevTotal = 0;
+
                 Axios.get(`${API_URL}/products`, {
                   params: {
                     id: val.productId,
@@ -76,11 +77,23 @@ class PaymentDetails extends React.Component {
                       this.setState({
                         status: "Confirmed",
                       });
-                      swal(
-                        "Confirmed!",
-                        "Pembelian telah dikonfirmasi",
-                        "success"
-                      );
+                      Axios.post(`${API_URL_JAVA}/users/transaction`, {
+                        ...this.state.transList,
+                      }).then((res) => {
+                        Axios.post(`${API_URL_JAVA}/users/transaction`, {
+                          ...this.state.transList,
+                        })
+                          .then((res) => {
+                            swal(
+                              "Confirmed!",
+                              "Pembelian telah dikonfirmasi dan invoice telah dikirim ke email pembeli",
+                              "success"
+                            );
+                          })
+                          .catch((err) => {
+                            swal("eror bro");
+                          });
+                      });
                     })
                     .catch((err) => {
                       console.log(err);
