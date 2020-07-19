@@ -41,9 +41,7 @@ export const loginHandler = (userData) => {
               .then((res) => {
                 swal("Yeay!", "Login berhasil", "success");
               })
-              .catch((err) => {
-                swal("fail");
-              });
+              .catch((err) => {});
           } else {
             swal("Oops...", "Password yang kamu masukkan salah", "error");
           }
@@ -176,9 +174,13 @@ export const editPasswordHandler = (id, username, passwordOld, passwordNew) => {
         if (passwordHash.verify(passwordOld, res.data.password)) {
           Axios.patch(`${API_URL_JAVA}/users/${id}`, {
             password: passwordHash.generate(passwordNew),
-          }).then((res) => {
-            swal("Yeay!", "password berhasil diganti", "success");
-          });
+          })
+            .then((res) => {
+              swal("Yeay!", "password berhasil diganti", "success");
+            })
+            .catch((err) => {
+              swal("error");
+            });
         } else {
           swal("Oops...", "Password lama anda salah lur", "error");
         }

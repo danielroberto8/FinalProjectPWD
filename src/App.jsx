@@ -22,7 +22,6 @@ import HistoryDetails from "./views/screens/History/HistoryDetails";
 import PathNotFound from "./views/screens/NotFound/PathNotFound";
 import Report from "./views/screens/Report/Report";
 import Profile from "./views/screens/Profile/Profile";
-import Category from "./views/screens/Category/Category";
 import PasswordForget from "./views/screens/PasswordForget/PasswordForget";
 
 const cookieObj = new Cookie();
@@ -49,7 +48,6 @@ class App extends React.Component {
             path="/payment/details/:transId"
             component={PaymentDetails}
           />
-          <Route exact path="/category" component={Category} />
         </>
       );
     }

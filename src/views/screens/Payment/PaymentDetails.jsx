@@ -5,12 +5,14 @@ import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import ButtonUI from "../../components/Button/Button";
 import swal from "sweetalert";
 import { connect } from "react-redux";
+import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 class PaymentDetails extends React.Component {
   state = {
     transList: [],
     itemList: [],
     status: "",
+    modalOpen: false,
   };
 
   componentDidMount = () => {
@@ -165,6 +167,12 @@ class PaymentDetails extends React.Component {
     });
   };
 
+  toogleModal = () => {
+    this.setState({
+      modalOpen: !this.state.modalOpen,
+    });
+  };
+
   renderTransactionDetails = () => {
     return this.state.itemList.map((val) => {
       return (
@@ -219,14 +227,12 @@ class PaymentDetails extends React.Component {
               </tr>
             </tfoot>
           </table>
-          <div className="container d-flex flex-column justify-content-center mt-3">
-            <h5>Bukti Transfer</h5>
-            <img
-              className="img-fluid"
-              style={{ height: "120px", width: "120px" }}
-              src={this.state.transList.transactionImage}
-              alt="transfer"
-            ></img>
+          <div className="d-flex flex-column justify-content-center align-center mt-3">
+            <center>
+              <ButtonUI type="textual" func={this.toogleModal}>
+                <h5>Lihat Bukti Transfer</h5>
+              </ButtonUI>
+            </center>
           </div>
           {this.state.status === "Waiting for confirmation" ? (
             <div className="d-flex justify-content-center mt-3">
@@ -255,6 +261,19 @@ class PaymentDetails extends React.Component {
           ) : (
             <h3 className="text-center">Pembeli belum melakukan pembayaran.</h3>
           )}
+          <Modal toggle={this.toogleModal} isOpen={this.state.modalOpen}>
+            <ModalHeader>
+              <h3>Bukti Transfer</h3>
+            </ModalHeader>
+            <ModalBody>
+              <img
+                className="img-fluid pr-3"
+                style={{ height: "360px", width: "360px" }}
+                src={this.state.transList.transactionImage}
+                alt="transfer"
+              ></img>
+            </ModalBody>
+          </Modal>
         </div>
       );
     } else {

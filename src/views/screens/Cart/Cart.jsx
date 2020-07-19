@@ -118,7 +118,7 @@ class Cart extends React.Component {
 
   deleteCart = (cartId) => {
     swal({
-      title: "Are you sure?",
+      title: "Apa anda yakin ingin menghapus cart?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -126,7 +126,7 @@ class Cart extends React.Component {
       if (willDelete) {
         Axios.delete(`${API_URL}/cart/${cartId}`)
           .then((res) => {
-            swal("Poof! Your imaginary file has been deleted!", {
+            swal("keranjang berhasil dihapus", {
               icon: "success",
             });
             this.props.onCartDelete();
@@ -142,7 +142,7 @@ class Cart extends React.Component {
             });
           });
       } else {
-        swal("Your imaginary file is safe!");
+        swal("Keranjangmu aman!");
       }
     });
   };
@@ -161,7 +161,7 @@ class Cart extends React.Component {
   getDate = () => {
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, "0");
-    let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    let mm = String(today.getMonth() + 1).padStart(2, "0");
     let yyyy = today.getFullYear();
 
     return (today = dd + "/" + mm + "/" + yyyy);
@@ -209,7 +209,7 @@ class Cart extends React.Component {
             });
             swal(
               "Check out berhasil!",
-              "Silahkan buka history anda untuk memeriksa status transaksi",
+              "Silahkan buka tab transfer anda untuk memeriksa status transaksi",
               "success"
             );
           })

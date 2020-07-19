@@ -8,6 +8,7 @@ import ProductCard from "../../components/Cards/ProductCard";
 import Colors from "../../../constants/Colors";
 import { API_URL } from "../../../constants/API";
 import Logo from "../../../assets/images/Logo.png";
+import ButtonUI from "../../components/Button/Button";
 
 class Home extends React.Component {
   state = {
@@ -15,6 +16,8 @@ class Home extends React.Component {
     animating: false,
     bestSellerData: [],
     category: "",
+    limit: 8,
+    isLimitReached: true,
   };
 
   componentDidMount = () => {
@@ -36,8 +39,13 @@ class Home extends React.Component {
   getBestSellerData = () => {
     Axios.get(`${API_URL}/products`)
       .then((res) => {
+        let limitval = true;
+        if (res.data.length > this) {
+          limitval = false;
+        }
         this.setState({
           bestSellerData: res.data,
+          isLimitReached: limitval,
         });
       })
       .catch((err) => {
@@ -46,23 +54,25 @@ class Home extends React.Component {
   };
 
   renderProducts = () => {
-    return this.state.bestSellerData.map((val) => {
-      const category = this.state.category;
-      if (
-        val.productName.toLowerCase().includes(this.props.search.searchTerm)
-      ) {
-        if (category !== "") {
-          if (val.category === category) {
-            return (
-              <ProductCard
-                key={`bestseller-${val.id}`}
-                data={val}
-                className="m-2"
-              />
-            );
+    return this.state.bestSellerData.map((val, idx) => {
+      if (idx < this.state.limit) {
+        const category = this.state.category;
+        if (
+          val.productName.toLowerCase().includes(this.props.search.searchTerm)
+        ) {
+          if (category !== "") {
+            if (val.category === category) {
+              return (
+                <ProductCard
+                  key={`bestseller-${val.id}`}
+                  data={val}
+                  className="m-2"
+                />
+              );
+            }
+          } else {
+            return <ProductCard data={val} className="m-2" />;
           }
-        } else {
-          return <ProductCard data={val} className="m-2" />;
         }
       }
     });
@@ -86,6 +96,32 @@ class Home extends React.Component {
     this.setState({
       category: key,
     });
+  };
+
+  seeLess = () => {
+    let limitreached = false;
+    let newlimit = this.state.limit - 8;
+    if (newlimit < this.state.bestSellerData.length) {
+      limitreached = true;
+    }
+    this.setState({
+      limit: newlimit,
+      isLimitReached: limitreached,
+    });
+    this.renderProducts();
+  };
+
+  seeMore = () => {
+    let limitreached = true;
+    let newlimit = this.state.limit + 8;
+    if (newlimit > this.state.bestSellerData.length) {
+      limitreached = false;
+    }
+    this.setState({
+      limit: newlimit,
+      isLimitReached: limitreached,
+    });
+    this.renderProducts();
   };
 
   render() {
@@ -148,12 +184,22 @@ class Home extends React.Component {
           <div className="row d-flex flex-wrap justify-content-center">
             {this.renderProducts()}
           </div>
-          <h2 className="text-center pt-4">Special Price</h2>
+          <div className="row d-flex flex-wrap justify-content-center">
+            {this.state.isLimitReached ? (
+              <ButtonUI className="mt-3" type="contained" func={this.seeMore}>
+                See more
+              </ButtonUI>
+            ) : (
+              <ButtonUI className="mt-3" type="contained" func={this.seeLess}>
+                See Less
+              </ButtonUI>
+            )}
+          </div>
+          <h2 className="text-center pt-5">Special Price</h2>
           <div className="row d-flex flex-wrap justify-content-center">
             {this.renderSpecialPrice()}
           </div>
         </div>
-        {/* ABOUT SECTION */}
         <div
           className="py-5"
           style={{ marginTop: "128px", backgroundColor: Colors.lightestGray }}
