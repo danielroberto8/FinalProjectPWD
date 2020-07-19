@@ -131,7 +131,7 @@ class Navbar extends React.Component {
                       style={{ color: "inherit", textDecoration: "none" }}
                       to={`/profile/${this.props.user.username}`}
                     >
-                      Profile
+                      {this.props.user.username}
                     </Link>
                   </DropdownItem>
                   {this.props.user.role === "admin" ? (
