@@ -37,6 +37,7 @@ class PaymentDetails extends React.Component {
     return sum;
   };
 
+  //Mengambil tanggal hari ini untuk mencatat tanggal konfirmasi pembayaran
   getDate = () => {
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, "0");
@@ -79,6 +80,7 @@ class PaymentDetails extends React.Component {
                       this.setState({
                         status: "Confirmed",
                       });
+                      //Mengirim invoice ke email user
                       Axios.post(`${API_URL_JAVA}/users/transaction`, {
                         ...this.state.transList,
                       }).then((res) => {

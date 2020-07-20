@@ -53,6 +53,7 @@ class Home extends React.Component {
       });
   };
 
+  //Menampilkan semua product
   renderProducts = () => {
     return this.state.bestSellerData.map((val, idx) => {
       if (idx < this.state.limit) {
@@ -78,6 +79,7 @@ class Home extends React.Component {
     });
   };
 
+  //Menampilkan product yang sedang diskon
   renderSpecialPrice = () => {
     return this.state.bestSellerData.map((val) => {
       if (val.discount) {
@@ -98,6 +100,7 @@ class Home extends React.Component {
     });
   };
 
+  //function untuk menampilkan data lebih sedikit
   seeLess = () => {
     let limitreached = false;
     let newlimit = this.state.limit - 8;
@@ -111,6 +114,7 @@ class Home extends React.Component {
     this.renderProducts();
   };
 
+  //function untuk menampilkan data lebih sedikit
   seeMore = () => {
     let limitreached = true;
     let newlimit = this.state.limit + 8;

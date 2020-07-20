@@ -154,6 +154,7 @@ class AdminDashboard extends React.Component {
     });
   };
 
+  //Sorting berdasarkan tabel header
   sortArray = (property) => {
     swal(`Berhasil disortir berdasarkan ${property}`);
     var sortOrder = 1;

@@ -55,6 +55,7 @@ class HistoryDetails extends React.Component {
     }
   };
 
+  //Upload file gambar ke firebase
   handleUpload = () => {
     if (this.state.image) {
       const { image } = this.state;
@@ -86,6 +87,7 @@ class HistoryDetails extends React.Component {
     }
   };
 
+  //Menampilkan total belanjaan
   showSum = () => {
     let sum = 0;
     for (let i = 0; i < this.state.itemList.length; i++) {
@@ -94,6 +96,7 @@ class HistoryDetails extends React.Component {
     return sum;
   };
 
+  //Menampilkan total belanjaan + ongkos kirim
   totalPayment = () => {
     let sum = this.showSum();
     let deliveryPrice = 0;

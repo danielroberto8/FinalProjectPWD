@@ -84,6 +84,7 @@ class AuthScreen extends React.Component {
     this.props.loginHandler(userData);
   };
 
+  //Mengambil tanggal hari ini untuk mengupadte last login
   getDate = () => {
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, "0");
@@ -153,6 +154,7 @@ class AuthScreen extends React.Component {
     });
   };
 
+  //Memasukan alamat email yang akan dikirimkan link reset password
   submitEmailForget = () => {
     if (this.state.emailForget && this.state.emailForget.indexOf("@") > 0) {
       Axios.get(`${API_URL_JAVA}/users/email/${this.state.emailForget}`)

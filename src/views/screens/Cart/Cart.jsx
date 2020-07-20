@@ -27,7 +27,7 @@ class Cart extends React.Component {
   loadData = () => {
     Axios.get(`${API_URL}/cart`, {
       params: {
-        userId: this.props.user.id,
+        user: this.props.user.id,
       },
     })
       .then((res) => {
@@ -57,6 +57,7 @@ class Cart extends React.Component {
       });
   };
 
+  //Menambah quantity suatu produk di dalam cart
   addCart = (cartId) => {
     let cartTemp = [];
     for (let i = 0; i < this.state.cartList.length; i++) {
@@ -65,10 +66,10 @@ class Cart extends React.Component {
         break;
       }
     }
-    const { id, userId, productId, quantity } = cartTemp;
+    const { id, user, productId, quantity } = cartTemp;
     Axios.put(`${API_URL}/cart/${cartId}`, {
       id,
-      userId,
+      user,
       productId,
       quantity: quantity + 1,
     })
@@ -84,6 +85,7 @@ class Cart extends React.Component {
       });
   };
 
+  //Mengurangi quantity produk di dalam cart
   reduceCart = (cartId) => {
     let cartTemp = [];
     for (let i = 0; i < this.state.cartList.length; i++) {
@@ -92,10 +94,10 @@ class Cart extends React.Component {
         break;
       }
     }
-    const { id, userId, productId, quantity } = cartTemp;
+    const { id, user, productId, quantity } = cartTemp;
     Axios.put(`${API_URL}/cart/${cartId}`, {
       id,
-      userId,
+      user,
       productId,
       quantity: quantity - 1,
     })
@@ -116,9 +118,10 @@ class Cart extends React.Component {
       });
   };
 
+  //Mengahpus sebuah cart
   deleteCart = (cartId) => {
     swal({
-      title: "Apa anda yakin ingin menghapus cart?",
+      title: "Apa anda yakin ingin menghapus keranjang?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -147,6 +150,7 @@ class Cart extends React.Component {
     });
   };
 
+  //Hapus cart secara menyeluruh
   deleteCartList = (key) => {
     this.props.onCartDelete();
     Axios.delete(`${API_URL}/cart/${key}`)
@@ -158,6 +162,7 @@ class Cart extends React.Component {
       });
   };
 
+  //Menga,bil tanggal hari ini untuk mencatat tanggal pembelian
   getDate = () => {
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, "0");
@@ -198,7 +203,7 @@ class Cart extends React.Component {
         })
           .then((res) => {
             this.state.cartList.map((val) => {
-              if (val.userId === this.props.user.id) {
+              if (val.user === this.props.user.id) {
                 this.deleteCartList(val.id);
               }
             });
@@ -227,7 +232,7 @@ class Cart extends React.Component {
       let cartTemp = [];
       for (let i = 0; i < this.state.cartList.length; i++) {
         if (
-          this.state.cartList[i].userId === this.props.user.id &&
+          this.state.cartList[i].user === this.props.user.id &&
           this.state.cartList[i].productId === val.id
         ) {
           cartTemp = this.state.cartList[i];

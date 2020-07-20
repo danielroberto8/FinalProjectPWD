@@ -36,6 +36,7 @@ class PasswordForget extends React.Component {
     })
       .then((willcontinue) => {
         if (willcontinue) {
+          //Mengganti password dengan menggunakan hash password lama sebagai token
           alert(passwordHash.generate(this.state.passwordReset));
           alert(
             `${API_URL_JAVA}/users/key/${this.props.match.params.key1}/${this.props.match.params.key2}`

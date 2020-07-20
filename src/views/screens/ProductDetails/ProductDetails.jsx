@@ -50,19 +50,19 @@ class ProductDetails extends React.Component {
   }
 
   addToCartHandler = () => {
-    const userId = this.props.user.id;
+    const user = this.props.user.id;
     const productId = this.state.id;
     Axios.get(`${API_URL}/cart`, {
       params: {
-        userId,
+        user,
         productId,
       },
     }).then((res) => {
       if (res.data.length > 0) {
-        const { id, userId, productId, quantity } = res.data[0];
+        const { id, user, productId, quantity } = res.data[0];
         Axios.put(`${API_URL}/cart/${id}`, {
           id,
-          userId,
+          user,
           productId,
           quantity: quantity + 1,
         })
@@ -75,7 +75,7 @@ class ProductDetails extends React.Component {
           });
       } else {
         Axios.post(`${API_URL}/cart`, {
-          userId: this.props.user.id,
+          user: this.props.user.id,
           productId: this.state.id,
           quantity: 1,
         })
