@@ -103,10 +103,17 @@ export const registerHandler = (userData) => {
               } else {
                 Axios.post(`${API_URL_JAVA}/users`, userData)
                   .then((res) => {
-                    dispatch({
-                      type: ON_LOGIN_SUCCESS,
-                      payload: res.data,
-                    });
+                    Axios.post(`${API_URL_JAVA}/users/verify/${email}`)
+                      .then((res) => {
+                        swal(`Email verifikasi sudah terkirim ke ${email}`);
+                        dispatch({
+                          type: ON_LOGIN_SUCCESS,
+                          payload: res.data,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
                   })
                   .catch((err) => {
                     console.log(err);

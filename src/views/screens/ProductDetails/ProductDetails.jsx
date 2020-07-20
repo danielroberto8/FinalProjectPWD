@@ -2,7 +2,7 @@ import React from "react";
 import Axios from "axios";
 import { onCartChange } from "../../../redux/actions";
 import { connect } from "react-redux";
-import { Redirect, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ButtonUI from "../../components/Button/Button";
 import { API_URL } from "../../../constants/API";
 import swal from "sweetalert";

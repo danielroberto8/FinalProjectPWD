@@ -84,19 +84,11 @@ class PaymentDetails extends React.Component {
                       Axios.post(`${API_URL_JAVA}/users/transaction`, {
                         ...this.state.transList,
                       }).then((res) => {
-                        Axios.post(`${API_URL_JAVA}/users/transaction`, {
-                          ...this.state.transList,
-                        })
-                          .then((res) => {
-                            swal(
-                              "Confirmed!",
-                              "Pembelian telah dikonfirmasi dan invoice telah dikirim ke email pembeli",
-                              "success"
-                            );
-                          })
-                          .catch((err) => {
-                            swal("eror bro");
-                          });
+                        swal(
+                          "Confirmed!",
+                          "Pembelian telah dikonfirmasi dan invoice telah dikirim ke email pembeli",
+                          "success"
+                        );
                       });
                     })
                     .catch((err) => {
