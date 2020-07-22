@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 import ProductCard from "../../components/Cards/ProductCard";
 import Colors from "../../../constants/Colors";
-import { API_URL_JAVA } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import Logo from "../../../assets/images/Logo.png";
 import ButtonUI from "../../components/Button/Button";
 
@@ -22,7 +22,7 @@ class Home extends React.Component {
 
   componentDidMount = () => {
     this.getBestSellerData();
-    Axios.get(`${API_URL_JAVA}/cart`, {
+    Axios.get(`${API_URL}/cart`, {
       params: {
         userId: this.props.user.id,
       },

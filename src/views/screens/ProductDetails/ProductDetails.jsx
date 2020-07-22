@@ -4,7 +4,7 @@ import { onCartChange } from "../../../redux/actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import ButtonUI from "../../components/Button/Button";
-import { API_URL } from "../../../constants/API";
+import { API_URL_JAVA } from "../../../constants/API";
 import swal from "sweetalert";
 
 class ProductDetails extends React.Component {
@@ -15,11 +15,11 @@ class ProductDetails extends React.Component {
     quantity: 0,
     discount: 0,
     image: "",
-    desc: "",
+    description: "",
   };
 
   componentDidMount() {
-    Axios.get(`${API_URL}/products`, {
+    Axios.get(`${API_URL_JAVA}/products`, {
       params: {
         id: this.props.match.params.productId,
       },
@@ -32,7 +32,7 @@ class ProductDetails extends React.Component {
           image,
           quantity,
           discount,
-          desc,
+          description,
         } = res.data[0];
         this.setState({
           id,
@@ -41,7 +41,7 @@ class ProductDetails extends React.Component {
           quantity,
           discount,
           image,
-          desc,
+          description,
         });
       })
       .catch((err) => {
@@ -50,51 +50,55 @@ class ProductDetails extends React.Component {
   }
 
   addToCartHandler = () => {
-    const user = this.props.user.id;
-    const productId = this.state.id;
-    Axios.get(`${API_URL}/cart`, {
+    const user_id = this.props.user.id;
+    const product_id = this.state.id;
+    Axios.get(`${API_URL_JAVA}/carts`, {
       params: {
-        user,
-        productId,
+        user_id,
+        product_id,
       },
-    }).then((res) => {
-      if (res.data.length > 0) {
-        const { id, user, productId, quantity } = res.data[0];
-        Axios.put(`${API_URL}/cart/${id}`, {
-          id,
-          user,
-          productId,
-          quantity: quantity + 1,
-        })
-          .then((res) => {
-            swal("Thank you!", "Produk ditambahkan ke keranjang", "success");
-            this.cartChangeHandler(productId);
+    })
+      .then((res) => {
+        if (res.data.length > 0) {
+          const { id, user_id, product_id, quantity } = res.data[0];
+          Axios.put(`${API_URL_JAVA}/carts/${id}`, {
+            id,
+            user_id,
+            product_id,
+            quantity: quantity + 1,
           })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        Axios.post(`${API_URL}/cart`, {
-          user: this.props.user.id,
-          productId: this.state.id,
-          quantity: 1,
-        })
-          .then((res) => {
-            console.log(res);
-            swal("Thank you!", "Produk ditambahkan ke keranjang", "success");
-            this.cartChangeHandler(productId);
+            .then((res) => {
+              swal("Thank you!", "Produk ditambahkan ke keranjang", "success");
+              this.cartChangeHandler(product_id);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          Axios.post(`${API_URL_JAVA}/carts`, {
+            user_id: this.props.user.id,
+            product_id: this.state.id,
+            quantity: 1,
           })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
+            .then((res) => {
+              console.log(res);
+              swal("Thank you!", "Produk ditambahkan ke keranjang", "success");
+              this.cartChangeHandler(product_id);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        swal("Something went wrong");
+      });
   };
 
-  cartChangeHandler = (productId) => {
-    Axios.get(`${API_URL}/cart`).then((res) => {
+  cartChangeHandler = (product_id) => {
+    Axios.get(`${API_URL_JAVA}/cart`).then((res) => {
       res.data.map((val) => {
-        if (val.productId === productId) {
+        if (val.product_id === product_id) {
           return <></>;
         }
       });
@@ -103,7 +107,7 @@ class ProductDetails extends React.Component {
   };
 
   render() {
-    const { productName, price, discount, image, desc } = this.state;
+    const { productName, price, discount, image, description } = this.state;
     const { isLogged } = this.props.user;
     return (
       <div className="container pt-4 pb-4">
@@ -119,7 +123,7 @@ class ProductDetails extends React.Component {
                 currency: "IDR",
               }).format(price - price * (discount / 100))}
             </h4>
-            <h5 className="mt-3 text-justify text-secondary">{desc}</h5>
+            <h5 className="mt-3 text-justify text-secondary">{description}</h5>
             {isLogged ? (
               <div className="d-flex mt-4">
                 <ButtonUI func={this.addToCartHandler}>Add to cart</ButtonUI>
