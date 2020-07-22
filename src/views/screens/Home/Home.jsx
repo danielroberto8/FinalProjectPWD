@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 import ProductCard from "../../components/Cards/ProductCard";
 import Colors from "../../../constants/Colors";
-import { API_URL } from "../../../constants/API";
+import { API_URL_JAVA } from "../../../constants/API";
 import Logo from "../../../assets/images/Logo.png";
 import ButtonUI from "../../components/Button/Button";
 
@@ -22,7 +22,7 @@ class Home extends React.Component {
 
   componentDidMount = () => {
     this.getBestSellerData();
-    Axios.get(`${API_URL}/cart`, {
+    Axios.get(`${API_URL_JAVA}/cart`, {
       params: {
         userId: this.props.user.id,
       },
@@ -37,7 +37,7 @@ class Home extends React.Component {
   };
 
   getBestSellerData = () => {
-    Axios.get(`${API_URL}/products`)
+    Axios.get(`${API_URL_JAVA}/products`)
       .then((res) => {
         let limitval = true;
         if (res.data.length > this) {

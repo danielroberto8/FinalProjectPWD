@@ -3,7 +3,7 @@ import "./AdminDashboard.css";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import Axios from "axios";
 
-import { API_URL } from "../../../constants/API";
+import { API_URL_JAVA } from "../../../constants/API";
 
 import ButtonUI from "../../components/Button/Button";
 import TextField from "../../components/TextField/TextField";
@@ -15,23 +15,23 @@ class AdminDashboard extends React.Component {
     productList: [],
     createForm: {
       productName: "",
-      price: null,
-      quantity: null,
-      discount: null,
+      price: 0,
+      quantity: 0,
+      discount: 0,
       category: "Mountain Bike",
       image: "",
-      desc: "",
+      description: "",
       totalPurchased: 0,
     },
     editForm: {
       id: 0,
       productName: "",
-      price: null,
-      quantity: null,
-      discount: null,
+      price: 0,
+      quantity: 0,
+      discount: 0,
       category: "",
       image: "",
-      desc: "",
+      description: "",
     },
     activeProducts: [],
     modalOpen: false,
@@ -39,7 +39,7 @@ class AdminDashboard extends React.Component {
   };
 
   getProductList = () => {
-    Axios.get(`${API_URL}/products`)
+    Axios.get(`${API_URL_JAVA}/products`)
       .then((res) => {
         this.setState({ productList: res.data });
       })
@@ -58,7 +58,7 @@ class AdminDashboard extends React.Component {
         discount,
         category,
         image,
-        desc,
+        description,
       } = val;
       return (
         <>
@@ -125,9 +125,12 @@ class AdminDashboard extends React.Component {
                       </span>{" "}
                     </h6>
                     <h6>
-                      Description:
+                      description:
                       <br></br>
-                      <span style={{ fontWeight: "normal" }}> {desc}</span>
+                      <span style={{ fontWeight: "normal" }}>
+                        {" "}
+                        {description}
+                      </span>
                     </h6>
                   </div>
                 </div>
@@ -206,18 +209,18 @@ class AdminDashboard extends React.Component {
   };
 
   createProductHandler = () => {
-    Axios.post(`${API_URL}/products`, this.state.createForm)
+    Axios.post(`${API_URL_JAVA}/products`, this.state.createForm)
       .then((res) => {
         swal("Success!", "Your item has been added to the list", "success");
         this.setState({
           createForm: {
             productName: "",
-            price: null,
-            quantity: null,
-            discount: null,
+            price: 0,
+            quantity: 0,
+            discount: 0,
             category: "Mountain Bike",
             image: "",
-            desc: "",
+            description: "",
             totalPurchased: 0,
           },
         });
@@ -238,8 +241,8 @@ class AdminDashboard extends React.Component {
   };
 
   editProductHandler = () => {
-    Axios.put(
-      `${API_URL}/products/${this.state.editForm.id}`,
+    Axios.patch(
+      `${API_URL_JAVA}/products/${this.state.editForm.id}`,
       this.state.editForm
     )
       .then((res) => {
@@ -261,7 +264,7 @@ class AdminDashboard extends React.Component {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        Axios.delete(`${API_URL}/products/${idx}`)
+        Axios.delete(`${API_URL_JAVA}/products/${idx}`)
           .then((res) => {
             swal("Poof! Your imaginary file has been deleted!", {
               icon: "success",
@@ -363,10 +366,12 @@ class AdminDashboard extends React.Component {
             </div>
             <div className="col-12 mt-3">
               <textarea
-                value={this.state.createForm.desc}
-                onChange={(e) => this.inputHandler(e, "desc", "createForm")}
+                value={this.state.createForm.description}
+                onChange={(e) =>
+                  this.inputHandler(e, "description", "createForm")
+                }
                 style={{ resize: "none" }}
-                placeholder="Description"
+                placeholder="descriptionription"
                 className="custom-text-input"
               ></textarea>
             </div>
@@ -440,10 +445,12 @@ class AdminDashboard extends React.Component {
               </div>
               <div className="col-12 mt-3">
                 <textarea
-                  value={this.state.editForm.desc}
-                  onChange={(e) => this.inputHandler(e, "desc", "editForm")}
+                  value={this.state.editForm.description}
+                  onChange={(e) =>
+                    this.inputHandler(e, "description", "editForm")
+                  }
                   style={{ resize: "none" }}
-                  placeholder="Description"
+                  placeholder="descriptionription"
                   className="custom-text-input"
                 ></textarea>
               </div>
