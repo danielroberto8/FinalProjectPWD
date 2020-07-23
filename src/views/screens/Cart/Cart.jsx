@@ -2,7 +2,7 @@ import React from "react";
 import Axios from "axios";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import { onCartChange, onCartDelete } from "../../../redux/actions";
 import ButtonUI from "../../components/Button/Button";
 import swal from "sweetalert";
@@ -25,15 +25,12 @@ class Cart extends React.Component {
   };
 
   loadData = () => {
-    Axios.get(`${API_URL}/cart`, {
-      params: {
-        user: this.props.user.id,
-      },
-    })
+    Axios.get(`${API_URL_JAVA}/carts/${this.props.user.id}`)
       .then((res) => {
         res.data.map((val) => this.fillCart(val));
       })
       .catch((err) => {
+        swal("error");
         console.log(err);
       });
   };
@@ -42,14 +39,10 @@ class Cart extends React.Component {
     this.setState({
       cartList: [...this.state.cartList, val],
     });
-    Axios.get(`${API_URL}/products`, {
-      params: {
-        id: val.productId,
-      },
-    })
+    Axios.get(`${API_URL_JAVA}/products/${val.product.id}`)
       .then((res) => {
         this.setState({
-          productList: [...this.state.productList, res.data[0]],
+          productList: [...this.state.productList, res.data],
         });
       })
       .catch((err) => {
@@ -66,12 +59,10 @@ class Cart extends React.Component {
         break;
       }
     }
-    const { id, user, productId, quantity } = cartTemp;
-    Axios.put(`${API_URL}/cart/${cartId}`, {
-      id,
-      user,
-      productId,
-      quantity: quantity + 1,
+    const { quantity } = cartTemp;
+    let newqty = quantity + 1;
+    Axios.patch(`${API_URL_JAVA}/carts/${cartId}`, {
+      quantity: newqty,
     })
       .then((res) => {
         this.setState({
@@ -81,6 +72,7 @@ class Cart extends React.Component {
         this.loadData();
       })
       .catch((err) => {
+        swal("add eror");
         console.log(err);
       });
   };
@@ -94,12 +86,10 @@ class Cart extends React.Component {
         break;
       }
     }
-    const { id, user, productId, quantity } = cartTemp;
-    Axios.put(`${API_URL}/cart/${cartId}`, {
-      id,
-      user,
-      productId,
-      quantity: quantity - 1,
+    const { quantity } = cartTemp;
+    let newqty = quantity - 1;
+    Axios.patch(`${API_URL_JAVA}/carts/${cartId}`, {
+      quantity: newqty,
     })
       .then((res) => {
         if (quantity < 2) {
@@ -114,6 +104,7 @@ class Cart extends React.Component {
         }
       })
       .catch((err) => {
+        swal("reduce error");
         console.log(err);
       });
   };
@@ -127,7 +118,7 @@ class Cart extends React.Component {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        Axios.delete(`${API_URL}/cart/${cartId}`)
+        Axios.delete(`${API_URL_JAVA}/carts/deletebycartid/${cartId}`)
           .then((res) => {
             swal("keranjang berhasil dihapus", {
               icon: "success",
@@ -153,7 +144,7 @@ class Cart extends React.Component {
   //Hapus cart secara menyeluruh
   deleteCartList = (key) => {
     this.props.onCartDelete();
-    Axios.delete(`${API_URL}/cart/${key}`)
+    Axios.delete(`${API_URL_JAVA}/carts/deletebyuserid/${key}`)
       .then((res) => {
         console.log(res);
       })
@@ -182,7 +173,7 @@ class Cart extends React.Component {
       const arrCart = this.state.productList.map((val, index) => {
         const { quantity } = this.state.cartList[index];
         return {
-          productId: val.id,
+          product_id: val.id,
           productName: val.productName,
           quantity,
           price: val.price,
@@ -228,17 +219,16 @@ class Cart extends React.Component {
   };
 
   renderCart = () => {
-    return this.state.productList.map((val, index) => {
+    return this.state.productList.map((val) => {
       let cartTemp = [];
-      for (let i = 0; i < this.state.cartList.length; i++) {
+      this.state.cartList.forEach((value) => {
         if (
-          this.state.cartList[i].user === this.props.user.id &&
-          this.state.cartList[i].productId === val.id
+          value.user.id === this.props.user.id &&
+          value.product.id === val.id
         ) {
-          cartTemp = this.state.cartList[i];
-          break;
+          cartTemp = value;
         }
-      }
+      });
       const { id, quantity } = cartTemp;
 
       return (

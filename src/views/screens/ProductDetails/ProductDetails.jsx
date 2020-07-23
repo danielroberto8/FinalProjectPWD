@@ -60,6 +60,7 @@ class ProductDetails extends React.Component {
     })
       .then((res) => {
         if (res.data.length > 0) {
+          alert("Masuk if");
           const { id, user_id, product_id, quantity } = res.data[0];
           Axios.put(`${API_URL_JAVA}/carts/${id}`, {
             id,
@@ -77,7 +78,7 @@ class ProductDetails extends React.Component {
         } else {
           Axios.post(`${API_URL_JAVA}/carts`, {
             user_id: this.props.user.id,
-            product_id: this.state.id,
+            product_id: product_id,
             quantity: 1,
           })
             .then((res) => {
@@ -86,6 +87,7 @@ class ProductDetails extends React.Component {
               this.cartChangeHandler(product_id);
             })
             .catch((err) => {
+              swal("error bro");
               console.log(err);
             });
         }

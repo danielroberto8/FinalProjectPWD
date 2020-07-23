@@ -1,6 +1,6 @@
 import React from "react";
 import Axios from "axios";
-import { API_URL } from "../../../constants/API";
+import { API_URL, API_URL_JAVA } from "../../../constants/API";
 import ButtonUI from "../../components/Button/Button";
 import swal from "sweetalert";
 import { storage } from "../../../firebase";
@@ -141,7 +141,7 @@ class HistoryDetails extends React.Component {
               "error"
             );
           } else {
-            Axios.patch(`${API_URL}/products/${val.productId}`, {
+            Axios.patch(`${API_URL_JAVA}/products/${val.productId}`, {
               quantity: newqty,
             })
               .then((res) => {
