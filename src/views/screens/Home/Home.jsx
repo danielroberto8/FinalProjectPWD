@@ -100,8 +100,11 @@ class Home extends React.Component {
   seeLess = () => {
     let limitreached = false;
     let newlimit = this.state.limit - 8;
-    if (newlimit < this.state.bestSellerData.length) {
+    if (newlimit < this.state.bestSellerData.length && newlimit >= 8) {
       limitreached = true;
+    }
+    if (newlimit < 8) {
+      newlimit = 8;
     }
     this.setState({
       limit: newlimit,

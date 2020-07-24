@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { API_URL } from "../../../constants/API";
 import ButtonUI from "../../components/Button/Button";
 import "./History.css";
+import swal from "sweetalert";
 
 class History extends React.Component {
   state = {
@@ -15,17 +16,14 @@ class History extends React.Component {
   };
 
   componentDidMount() {
-    Axios.get(`${API_URL}/transaction`, {
-      params: {
-        user: this.props.user.id,
-      },
-    })
+    Axios.get(`${API_URL}/transaction/${this.props.user.id}`)
       .then((res) => {
         this.setState({
           transactionList: res.data,
         });
       })
       .catch((err) => {
+        swal("error");
         console.log(err);
       });
   }

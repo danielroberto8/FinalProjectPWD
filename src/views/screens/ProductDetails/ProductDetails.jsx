@@ -19,11 +19,7 @@ class ProductDetails extends React.Component {
   };
 
   componentDidMount() {
-    Axios.get(`${API_URL_JAVA}/products`, {
-      params: {
-        id: this.props.match.params.productId,
-      },
-    })
+    Axios.get(`${API_URL_JAVA}/products/${this.props.match.params.productId}`)
       .then((res) => {
         const {
           id,
@@ -33,7 +29,7 @@ class ProductDetails extends React.Component {
           quantity,
           discount,
           description,
-        } = res.data[0];
+        } = res.data;
         this.setState({
           id,
           productName,
@@ -60,13 +56,10 @@ class ProductDetails extends React.Component {
     })
       .then((res) => {
         if (res.data.length > 0) {
-          alert("Masuk if");
-          const { id, user_id, product_id, quantity } = res.data[0];
-          Axios.put(`${API_URL_JAVA}/carts/${id}`, {
-            id,
-            user_id,
-            product_id,
-            quantity: quantity + 1,
+          const { id, product_id, quantity } = res.data[0];
+          let newqty = quantity + 1;
+          Axios.patch(`${API_URL_JAVA}/carts/${id}`, {
+            quantity: newqty,
           })
             .then((res) => {
               swal("Thank you!", "Produk ditambahkan ke keranjang", "success");
